@@ -1,94 +1,29 @@
-// Position variables
-let circlePositionX = 200;
-let circlePositionY = 200;
-
-// Speed variables
-let circleSpeedX = 2;
-let circleSpeedY = 3;
-
-// Radius variable
-let circleRadius = 10;
-
-// Hue variable
-let circleHue = 0;
+// Set the video capture as a global variable.
+let capture;
 
 function setup() {
-  // Create 400x400 canvas
+  describe('Video capture from the device webcam.');
   createCanvas(windowWidth, windowHeight);
 
-  // Cover canvas with white
-  background(255);
+  // Use the createCapture() function to access the device's
+  // camera and start capturing video.
+  capture = createCapture(VIDEO);
 
-  // Draw ellipses using their radius
-  ellipseMode(RADIUS);
+  // Make the capture frame half of the canvas.
+  capture.size(720, 400);
 
-  // Draw rectangles on either side of the canvas
-  noStroke();
-  fill(128);
-  rect(0, 0, width * 0.3, height);
-  rect(width * 0.75, 0, width * 0.3, height);
-
-  // Use Hue Saturation Brightness for colors on circle trail
-  colorMode(HSB);
-
-  // Set stroke weight to 4 units
-  strokeWeight(4);
-
-  // Create screen reader accessible description
-  describe(
-    'A circle starts in the center of the canvas. When the user holds the mouse down, the circle bounces around the canvas, its inside switches between black and white, and its outline fades between colors, leaving a rainbow trail.'
-  );
+  // Use capture.hide() to remove the p5.Element object made
+  // using createCapture(). The video will instead be rendered as
+  // an image in draw().
+  capture.hide();
 }
 
 function draw() {
-  // Set stroke color using current hue
-  stroke(circleHue, 80, 90);
+  // Set the background to gray.
+  background(51);
 
-  // If circle's x position is between 100 and 300
-  if (circlePositionX >= 480 && circlePositionX <= 1150) {
-    // Set fill color to black
-    fill(0);
-
-    // Otherwise
-  } else {
-    // Set fill color to white
-    fill(255);
-  }
-
-  // Draw circle at current position
-  circle(circlePositionX, circlePositionY, circleRadius);
-
-  // If mouse is held down, animate the sketch
-  if (mouseIsPressed === true) {
-    // Add speed to circle's position to make it move
-    circlePositionX = circlePositionX + circleSpeedX;
-    circlePositionY = circlePositionY + circleSpeedY;
-
-    // Increase hue by 1
-    circleHue = circleHue + 1;
-  }
-
-  // If hue has reached maximum value
-  if (circleHue >= 360) {
-    // Reset hue to 0
-    circleHue = 0;
-  }
-
-  // If circle is beyond left or right edge
-  if (
-    circlePositionX < circleRadius ||
-    circlePositionX > width - circleRadius
-  ) {
-    // Reverse horizontal speed
-    circleSpeedX = -circleSpeedX;
-  }
-
-  // If circle is beyond top or bottom edge
-  if (
-    circlePositionY < circleRadius ||
-    circlePositionY > height - circleRadius
-  ) {
-    // Reverse vertical speed
-    circleSpeedY = -circleSpeedY;
-  }
+  // Draw the resulting video capture on the canvas
+  // with the invert filter applied.
+  image(capture, 0, 0, 720, 800);
+  filter(INVERT);
 }
